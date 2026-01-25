@@ -1,0 +1,88 @@
+{
+  "name": "diff-to-commit",
+  "displayName": "Diff to Commit",
+  "description": "Fill SCM commit message from git diff",
+  "version": "0.0.1",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "SCM"
+  ],
+  "activationEvents": [
+    "onCommand:diff-to-commit.fillMessageStaged",
+    "onCommand:diff-to-commit.fillMessageWorkingTree",
+    "onCommand:diff-to-commit.setApiKey"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "diff-to-commit.fillMessageStaged",
+        "title": "Diff to Commit: Fill Message (Staged)"
+      },
+      {
+        "command": "diff-to-commit.fillMessageWorkingTree",
+        "title": "Diff to Commit: Fill Message (Working Tree)"
+      },
+      {
+        "command": "diff-to-commit.setApiKey",
+        "title": "Diff to Commit: Set API Key"
+      }
+    ],
+    "configuration": {
+      "title": "Diff to Commit",
+      "properties": {
+        "diffToCommit.ai.baseUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "Base URL for OpenAI-compatible API"
+        },
+        "diffToCommit.ai.model": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "Model name for commit message generation"
+        },
+        "diffToCommit.behavior.allowOverwrite": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow overwriting a non-empty SCM commit message"
+        },
+        "diffToCommit.diff.maxChars": {
+          "type": "number",
+          "default": 20000,
+          "minimum": 1000,
+          "description": "Maximum characters of diff to send to AI"
+        },
+        "diffToCommit.output.language": {
+          "type": "string",
+          "enum": [
+            "english",
+            "korean",
+            "auto"
+          ],
+          "default": "english",
+          "description": "Language for commit message generation"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./tsconfig.json && tsc -p ./tsconfig.test.json",
+    "watch": "tsc -watch -p ./tsconfig.json",
+    "test:unit": "vitest run",
+    "test:integration": "node ./out/test/test/integration/runTest.js",
+    "test": "npm run test:unit && npm run test:integration"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.80.0",
+    "@vscode/test-electron": "^2.5.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  }
+}
