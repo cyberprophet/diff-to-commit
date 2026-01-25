@@ -6,6 +6,7 @@ export interface OpenAIRequestOptions {
   model: string;
   apiKey: string;
   prompt: string;
+  headers?: Record<string, string>;
 }
 
 export async function requestCommitMessage(
@@ -21,11 +22,14 @@ export async function requestCommitMessage(
   }
 
   const url = buildEndpoint(options.baseUrl);
+  const authHeaders = options.headers ?? {
+    Authorization: `Bearer ${options.apiKey}`
+  };
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${options.apiKey}`
+      ...authHeaders
     },
     body: JSON.stringify({
       model: options.model,

@@ -4,4 +4,11 @@ export interface ExtensionConfig {
   allowOverwrite: boolean;
   maxDiffChars: number;
   language: "english" | "korean" | "auto";
+  backend: "auto" | "account" | "apikey";
+  accountProviderId: string;
+  accountScopes: string[];
+  accountBaseUrl: string;
+  accountAuthHeaderName: string;
+  accountAuthHeaderPrefix: string;
+  accountUsableEndpoint: string;
 }

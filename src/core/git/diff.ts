@@ -9,9 +9,9 @@ export interface GetDiffOptions {
 const baseArgs = [
   "-c",
   "core.quotepath=false",
+  "diff",
   "--no-ext-diff",
   "--no-color",
-  "diff",
   "-U3"
 ];
 

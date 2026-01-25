@@ -9,6 +9,9 @@ export async function generateMessageFromDiff(args: {
   mode: "staged" | "workingTree";
   config: ExtensionConfig;
   apiKey: string;
+  baseUrl?: string;
+  model?: string;
+  headers?: Record<string, string>;
 }): Promise<string> {
   const scopeHint = inferScopeFromPaths(args.changedPaths);
   const prompt = buildPromptInput({
@@ -19,10 +22,11 @@ export async function generateMessageFromDiff(args: {
   });
 
   const message = await requestCommitMessage({
-    baseUrl: args.config.baseUrl,
-    model: args.config.model,
+    baseUrl: args.baseUrl ?? args.config.baseUrl,
+    model: args.model ?? args.config.model,
     apiKey: args.apiKey,
-    prompt
+    prompt,
+    headers: args.headers
   });
 
   message.subject = sanitizeSubject(message.subject);

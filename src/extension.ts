@@ -1,13 +1,17 @@
 import * as vscode from "vscode";
 import { getDiff } from "./core/git/diff";
-import { generateMessageFromDiff } from "./core/commit/message";
-import { maskSensitive } from "./core/redact/redact";
 import { getChangedPathsFromDiff } from "./core/git/paths";
-import { getConfig } from "./extension/config";
+import { selectProvider } from "./core/providers/router";
+import { maskSensitive } from "./core/redact/redact";
+import { clearApiKey } from "./extension/commands/clearApiKey";
 import { setApiKey } from "./extension/commands/setApiKey";
+import { signIn } from "./extension/commands/signIn";
+import { signOut } from "./extension/commands/signOut";
+import { getConfig } from "./extension/config";
 import { getGitApi, pickRepository } from "./extension/gitApi";
-
-const API_KEY_SECRET = "diffToCommit.apiKey";
+import { CopilotProvider } from "./extension/providers/copilotProvider";
+import { ApiKeyProvider } from "./extension/providers/apiKeyProvider";
+import { API_KEY_SECRET } from "./extension/secrets";
 
 export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
@@ -19,7 +23,12 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("diff-to-commit.setApiKey", () =>
       setApiKey(context, API_KEY_SECRET)
-    )
+    ),
+    vscode.commands.registerCommand("diff-to-commit.clearApiKey", () =>
+      clearApiKey(context, API_KEY_SECRET)
+    ),
+    vscode.commands.registerCommand("diff-to-commit.signIn", () => signIn()),
+    vscode.commands.registerCommand("diff-to-commit.signOut", () => signOut())
   );
 }
 
@@ -83,22 +92,59 @@ async function fillMessage(
   const redacted = maskSensitive(diff);
   const changedPaths = getChangedPathsFromDiff(diff);
 
-  const apiKey = await context.secrets.get(API_KEY_SECRET);
-
-  if (!apiKey) {
-    vscode.window.showErrorMessage(
-      "API key not set. Run 'Diff to Commit: Set API Key'."
-    );
-    return;
-  }
-
   try {
-    const message = await generateMessageFromDiff({
+    const copilotProvider = new CopilotProvider(context);
+    const apiKeyProvider = new ApiKeyProvider(context, API_KEY_SECRET);
+
+    const copilotUsable =
+      config.backend === "apikey" ? false : await copilotProvider.isUsable();
+    const apiKeyUsable =
+      config.backend === "account" ? false : await apiKeyProvider.isUsable();
+
+    const accountProxy = {
+      id: copilotProvider.id,
+      isAvailable: () => true,
+      isUsable: async () => copilotUsable,
+      generate: (payload: Parameters<typeof copilotProvider.generate>[0]) =>
+        copilotProvider.generate(payload)
+    };
+    const apiKeyProxy = {
+      id: apiKeyProvider.id,
+      isAvailable: () => true,
+      isUsable: async () => apiKeyUsable,
+      generate: (payload: Parameters<typeof apiKeyProvider.generate>[0]) =>
+        apiKeyProvider.generate(payload)
+    };
+
+    const provider = await selectProvider(config.backend, {
+      account: accountProxy,
+      apikey: apiKeyProxy
+    });
+
+    if (!provider) {
+      if (config.backend === "account") {
+        vscode.window.showErrorMessage(
+          "GitHub Copilot not available. Sign in with GitHub and check your Copilot subscription."
+        );
+        return;
+      }
+      if (config.backend === "apikey") {
+        vscode.window.showErrorMessage(
+          "API key not set. Run 'Diff to Commit: Set API Key'."
+        );
+        return;
+      }
+      vscode.window.showErrorMessage(
+        "Sign in with GitHub (requires Copilot) or set an API key to generate a commit message."
+      );
+      return;
+    }
+
+    const message = await provider.generate({
       diff: redacted,
       changedPaths,
       mode,
-      config,
-      apiKey
+      config
     });
     inputBox.value = message;
   } catch (error) {
