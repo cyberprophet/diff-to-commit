@@ -2,14 +2,14 @@
   "name": "diff-to-commit",
   "displayName": "Diff to Commit",
   "description": "Fill SCM commit message from git diff",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "Dayond",
   "license": "MIT",
   "engines": {
     "vscode": "^1.80.0"
   },
   "categories": [
-    "SCM"
+    "Other"
   ],
   "activationEvents": [
     "onCommand:diff-to-commit.fillMessageStaged",
