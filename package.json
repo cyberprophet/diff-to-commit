@@ -14,7 +14,10 @@
   "activationEvents": [
     "onCommand:diff-to-commit.fillMessageStaged",
     "onCommand:diff-to-commit.fillMessageWorkingTree",
-    "onCommand:diff-to-commit.setApiKey"
+    "onCommand:diff-to-commit.setApiKey",
+    "onCommand:diff-to-commit.clearApiKey",
+    "onCommand:diff-to-commit.signIn",
+    "onCommand:diff-to-commit.signOut"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -30,11 +33,68 @@
       {
         "command": "diff-to-commit.setApiKey",
         "title": "Diff to Commit: Set API Key"
+      },
+      {
+        "command": "diff-to-commit.clearApiKey",
+        "title": "Diff to Commit: Clear API Key"
+      },
+      {
+        "command": "diff-to-commit.signIn",
+        "title": "Diff to Commit: Sign In (Account)"
+      },
+      {
+        "command": "diff-to-commit.signOut",
+        "title": "Diff to Commit: Sign Out (Account)"
       }
     ],
     "configuration": {
       "title": "Diff to Commit",
       "properties": {
+        "diffToCommit.backend": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "account",
+            "apikey"
+          ],
+          "default": "auto",
+          "description": "Backend selection: account OAuth, API key, or auto fallback"
+        },
+        "diffToCommit.account.providerId": {
+          "type": "string",
+          "default": "github",
+          "description": "Authentication provider ID for account sign-in"
+        },
+        "diffToCommit.account.scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "read:user"
+          ],
+          "description": "Scopes requested for account sign-in"
+        },
+        "diffToCommit.account.baseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Base URL for OpenAI-compatible API using account auth"
+        },
+        "diffToCommit.account.authHeaderName": {
+          "type": "string",
+          "default": "Authorization",
+          "description": "Header name for account auth token"
+        },
+        "diffToCommit.account.authHeaderPrefix": {
+          "type": "string",
+          "default": "Bearer ",
+          "description": "Prefix for account auth header value"
+        },
+        "diffToCommit.account.usableEndpoint": {
+          "type": "string",
+          "default": "/v1/models",
+          "description": "Endpoint path for account usability check"
+        },
         "diffToCommit.ai.baseUrl": {
           "type": "string",
           "default": "https://api.openai.com/v1",
