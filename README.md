@@ -39,6 +39,9 @@ Generate a Conventional Commit message from `git diff` and fill the Source Contr
 ## Security
 Diffs are redacted before any AI call. The extension masks common secrets such as bearer tokens, API keys, private key blocks, and AWS credentials. Always review generated messages before committing.
 
+## Changelog
+- [CHANGELOG](CHANGELOG.md)
+
 ## Testing
 ```bash
 npm run compile
