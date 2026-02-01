@@ -140,12 +140,24 @@ async function fillMessage(
       return;
     }
 
-    const message = await provider.generate({
+    const payload = {
       diff: redacted,
       changedPaths,
       mode,
       config
-    });
+    };
+
+    let message: string;
+    try {
+      message = await provider.generate(payload);
+    } catch (error) {
+      if (config.backend === "auto" && provider.id === "account" && apiKeyUsable) {
+        message = await apiKeyProxy.generate(payload);
+      } else {
+        throw error;
+      }
+    }
+
     inputBox.value = message;
   } catch (error) {
     vscode.window.showErrorMessage(
