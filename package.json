@@ -26,7 +26,7 @@
       {
         "command": "diff-to-commit.fillMessageStaged",
         "title": "Diff to Commit: Fill Message (Staged)",
-        "icon": "$(sparkle)"
+        "icon": "$(chat-sparkle)"
       },
       {
         "command": "diff-to-commit.fillMessageWorkingTree",
@@ -53,6 +53,7 @@
       "scm/title": [
         {
           "command": "diff-to-commit.fillMessageStaged",
+          "icon": "$(chat-sparkle)",
           "group": "navigation",
           "when": "scmProvider == git"
         }
