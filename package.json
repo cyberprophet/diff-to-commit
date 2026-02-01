@@ -2,7 +2,7 @@
   "name": "diff-to-commit",
   "displayName": "Diff to Commit",
   "description": "Fill SCM commit message from git diff",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "Dayond",
   "license": "MIT",
   "engines": {
