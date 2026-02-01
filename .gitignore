@@ -15,6 +15,7 @@ Thumbs.db
 coverage/
 *.tgz
 *.vsix
+nul
 .sisyphus/
 vitest.config.js
 vitest.config.js.map
