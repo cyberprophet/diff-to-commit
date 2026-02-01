@@ -25,7 +25,8 @@
     "commands": [
       {
         "command": "diff-to-commit.fillMessageStaged",
-        "title": "Diff to Commit: Fill Message (Staged)"
+        "title": "Diff to Commit: Fill Message (Staged)",
+        "icon": "$(sparkle)"
       },
       {
         "command": "diff-to-commit.fillMessageWorkingTree",
@@ -48,6 +49,15 @@
         "title": "Diff to Commit: Sign Out (Account)"
       }
     ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "diff-to-commit.fillMessageStaged",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
     "configuration": {
       "title": "Diff to Commit",
       "properties": {
@@ -103,7 +113,7 @@
         },
         "diffToCommit.ai.model": {
           "type": "string",
-          "default": "gpt-4o-mini",
+          "default": "gpt-5-nano",
           "description": "Model name for commit message generation"
         },
         "diffToCommit.behavior.allowOverwrite": {

@@ -43,8 +43,7 @@ export async function requestCommitMessage(
           role: "user",
           content: options.prompt
         }
-      ],
-      temperature: 0.2
+      ]
     })
   });
 

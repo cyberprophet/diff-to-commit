@@ -13,7 +13,7 @@ Generate a Conventional Commit message from `git diff` and fill the Source Contr
 ## Settings
 - `diffToCommit.backend` (default: `auto`)
 - `diffToCommit.ai.baseUrl` (default: `https://api.openai.com/v1`)
-- `diffToCommit.ai.model` (default: `gpt-4o-mini`)
+- `diffToCommit.ai.model` (default: `gpt-5-nano`)
 - `diffToCommit.behavior.allowOverwrite` (default: `false`)
 - `diffToCommit.diff.maxChars` (default: `20000`)
 - `diffToCommit.output.language` (default: `english`)

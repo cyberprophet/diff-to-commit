@@ -6,7 +6,7 @@ export function getConfig(): ExtensionConfig {
 
   return {
     baseUrl: config.get<string>("ai.baseUrl", "https://api.openai.com/v1"),
-    model: config.get<string>("ai.model", "gpt-4o-mini"),
+    model: config.get<string>("ai.model", "gpt-5-nano"),
     allowOverwrite: config.get<boolean>("behavior.allowOverwrite", false),
     maxDiffChars: config.get<number>("diff.maxChars", 20000),
     language: config.get<"english" | "korean" | "auto">("output.language", "english"),
