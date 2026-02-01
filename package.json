@@ -2,8 +2,9 @@
   "name": "diff-to-commit",
   "displayName": "Diff to Commit",
   "description": "Fill SCM commit message from git diff",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "Dayond",
+  "icon": "assets/icon.png",
   "license": "MIT",
   "engines": {
     "vscode": "^1.80.0"
