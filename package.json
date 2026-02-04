@@ -37,6 +37,11 @@
         "icon": "$(chat-sparkle)"
       },
       {
+        "command": "diff-to-commit.fillMessageStaged.loading",
+        "title": "Diff to Commit: Fill Message (Generating...)",
+        "icon": "$(loading~spin)"
+      },
+      {
         "command": "diff-to-commit.fillMessageWorkingTree",
         "title": "Diff to Commit: Fill Message (Working Tree)"
       },
@@ -63,7 +68,13 @@
           "command": "diff-to-commit.fillMessageStaged",
           "icon": "$(chat-sparkle)",
           "group": "navigation",
-          "when": "scmProvider == git"
+          "when": "scmProvider == git && !diffToCommit.isGenerating"
+        },
+        {
+          "command": "diff-to-commit.fillMessageStaged.loading",
+          "icon": "$(loading~spin)",
+          "group": "navigation",
+          "when": "scmProvider == git && diffToCommit.isGenerating"
         }
       ]
     },

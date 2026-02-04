@@ -14,10 +14,13 @@ import { ApiKeyProvider } from "./extension/providers/apiKeyProvider";
 import { API_KEY_SECRET } from "./extension/secrets";
 
 export function activate(context: vscode.ExtensionContext): void {
+  vscode.commands.executeCommand("setContext", "diffToCommit.isGenerating", false);
+
   context.subscriptions.push(
     vscode.commands.registerCommand("diff-to-commit.fillMessageStaged", () =>
       fillMessage(context, "staged")
     ),
+    vscode.commands.registerCommand("diff-to-commit.fillMessageStaged.loading", () => {}),
     vscode.commands.registerCommand("diff-to-commit.fillMessageWorkingTree", () =>
       fillMessage(context, "workingTree")
     ),
@@ -147,26 +150,40 @@ async function fillMessage(
       config
     };
 
-    const message = await vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title: "Generating commit message...",
-        cancellable: false
-      },
-      async (): Promise<string> => {
-        try {
-          return await provider.generate(payload);
-        } catch (error) {
-          if (config.backend === "auto" && provider.id === "account" && apiKeyUsable) {
-            return await apiKeyProxy.generate(payload);
-          } else {
-            throw error;
+    await vscode.commands.executeCommand("setContext", "diffToCommit.isGenerating", true);
+
+    const statusBarItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      100
+    );
+    statusBarItem.text = "$(loading~spin) Generating commit message...";
+    statusBarItem.show();
+
+    try {
+      const message = await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: "Generating commit message...",
+          cancellable: false
+        },
+        async (): Promise<string> => {
+          try {
+            return await provider.generate(payload);
+          } catch (error) {
+            if (config.backend === "auto" && provider.id === "account" && apiKeyUsable) {
+              return await apiKeyProxy.generate(payload);
+            } else {
+              throw error;
+            }
           }
         }
-      }
-    );
+      );
 
-    inputBox.value = message;
+      inputBox.value = message;
+    } finally {
+      statusBarItem.dispose();
+      await vscode.commands.executeCommand("setContext", "diffToCommit.isGenerating", false);
+    }
   } catch (error) {
     vscode.window.showErrorMessage(
       `Failed to generate commit message: ${error instanceof Error ? error.message : String(error)}`
