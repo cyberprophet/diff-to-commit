@@ -147,16 +147,24 @@ async function fillMessage(
       config
     };
 
-    let message: string;
-    try {
-      message = await provider.generate(payload);
-    } catch (error) {
-      if (config.backend === "auto" && provider.id === "account" && apiKeyUsable) {
-        message = await apiKeyProxy.generate(payload);
-      } else {
-        throw error;
+    const message = await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Generating commit message...",
+        cancellable: false
+      },
+      async (): Promise<string> => {
+        try {
+          return await provider.generate(payload);
+        } catch (error) {
+          if (config.backend === "auto" && provider.id === "account" && apiKeyUsable) {
+            return await apiKeyProxy.generate(payload);
+          } else {
+            throw error;
+          }
+        }
       }
-    }
+    );
 
     inputBox.value = message;
   } catch (error) {
