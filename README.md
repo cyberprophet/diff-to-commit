@@ -1,6 +1,6 @@
 # Diff to Commit
 
-[![Publish Extension](https://github.com/cyberprophet/diff-to-commit/actions/workflows/publish.yml/badge.svg?branch=main&event=push)](https://github.com/cyberprophet/diff-to-commit/actions/workflows/publish.yml)
+[![Publish Extension](https://github.com/cyberprophet/diff-to-commit/actions/workflows/publish.yml/badge.svg)](https://github.com/cyberprophet/diff-to-commit/actions/workflows/publish.yml)
 
 Generate a Conventional Commit message from `git diff` and fill the Source Control message box.
 
